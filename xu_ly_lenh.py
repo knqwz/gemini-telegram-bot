@@ -6,6 +6,36 @@ import google.generativeai as genai
 
 danh_sach_phien_lam_viec = {}
 
+danh_sach_mo_hinh_kha_dung = [
+    "gemini-2.5-flash",
+    "gemma-4-26b-a4b-it",
+    "gemma-4-31b-it",
+    "gemini-flash-latest",
+    "gemini-flash-lite-latest",
+    "gemini-3-flash-preview",
+    "gemini-3.1-flash-lite-preview",
+    "gemini-3.1-flash-lite",
+    "gemini-3.5-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-3.6-flash",
+    "gemini-robotics-er-1.6-preview",
+    "gemini-robotics-er-2-preview"
+]
+
+def tim_mo_hinh_phu_hop(chuoi_nhap_lieu):
+    chuoi_sao_chep = chuoi_nhap_lieu.lower().strip().replace("thinking", "").strip()
+    chuoi_chuan_hoa = chuoi_sao_chep.replace(" ", "-")
+    if chuoi_chuan_hoa in danh_sach_mo_hinh_kha_dung:
+        return chuoi_chuan_hoa
+    if not chuoi_chuan_hoa.startswith("gemini-") and not chuoi_chuan_hoa.startswith("gemma-"):
+        kieu_gemini = "gemini-" + chuoi_chuan_hoa
+        if kieu_gemini in danh_sach_mo_hinh_kha_dung:
+            return kieu_gemini
+    for mo_hinh in danh_sach_mo_hinh_kha_dung:
+        if chuoi_sao_chep in mo_hinh or chuoi_chuan_hoa in mo_hinh:
+            return mo_hinh
+    return "gemini-3.6-flash"
+
 def lay_hoac_tao_phien_lam_viec(chat_id):
     if chat_id not in danh_sach_phien_lam_viec:
         danh_sach_phien_lam_viec[chat_id] = {
@@ -97,16 +127,19 @@ def xu_ly_grill_me(bot, message):
 def xu_ly_mo_hinh(bot, message):
     chat_id = message.chat.id
     phien_lam_viec = lay_hoac_tao_phien_lam_viec(chat_id)
-    noi_dung_lenh = message.text.replace("/mohinh", "").strip()
+    noi_dung_lenh = message.text.replace("/mohinh", "").strip().lower()
+    
     if not noi_dung_lenh:
-        bot.reply_to(message, f"《Thông báo》 Mô hình hiện tại: {phien_lam_viec['mo_hinh']}\nChế độ Thinking: {phien_lam_viec['che_do_thinking']}")
+        danh_sach_hien_thi = "\n".join([f"- {m}" for m in danh_sach_mo_hinh_kha_dung])
+        bot.reply_to(message, f"《Thông báo》 Mô hình hiện tại: {phien_lam_viec['mo_hinh']}\nChế độ Thinking: {phien_lam_viec['che_do_thinking']}\n\nDanh sách mô hình khả dụng:\n{danh_sach_hien_thi}")
         return
-    cai_dat = noi_dung_lenh.split()
-    ten_mo_hinh = cai_dat[0]
-    co_thinking = "thinking" in noi_dung_lenh.lower()
-    phien_lam_viec["mo_hinh"] = f"gemini-{ten_mo_hinh}" if not ten_mo_hinh.startswith("gemini-") else ten_mo_hinh
+        
+    co_thinking = "thinking" in noi_dung_lenh
+    mo_hinh_tim_duoc = tim_mo_hinh_phu_hop(noi_dung_lenh)
+        
+    phien_lam_viec["mo_hinh"] = mo_hinh_tim_duoc
     phien_lam_viec["che_do_thinking"] = co_thinking
-    bot.reply_to(message, f"《Thực thi》 Đã chuyển sang mô hình: {phien_lam_viec['mo_hinh']} (Thinking: {co_thinking})")
+    bot.reply_to(message, f"《Thực thi》 Đã chuyển sang mô hình: {mo_hinh_tim_duoc} (Thinking: {co_thinking})")
 
 def xu_ly_thong_tin(bot, message):
     chat_id = message.chat.id
@@ -167,4 +200,4 @@ def xu_ly_gui_tin_nhan_gemini(bot, message, noi_dung_van_ban=None):
         
         bot.reply_to(message, van_ban_tra_ve)
     except Exception as loi:
-        bot.reply_to(message, f"《Cảnh báo》 Sự cố xử lý: {str(loi)}")
+        bot.reply_to(message, f"《Cảnh báo》 Sự cố xử lý từ Gemini API: {str(loi)}")
