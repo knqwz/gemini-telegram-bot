@@ -11,17 +11,18 @@ DUONG_DAN_WEBHOOK_DISCORD = "https://discord.com/api/webhooks/153735536616000718
 danh_sach_phien_lam_viec = {}
 
 danh_sach_mo_hinh_kha_dung = [
-    "gemini-2.5-flash",
-    "gemma-4-26b-a4b-it",
-    "gemma-4-31b-it",
-    "gemini-flash-latest",
-    "gemini-flash-lite-latest",
-    "gemini-3-flash-preview",
-    "gemini-3.1-flash-lite-preview",
-    "gemini-3.1-flash-lite",
+    "gemini-3.7-flash",
+    "gemini-3.6-flash",
     "gemini-3.5-flash",
     "gemini-3.5-flash-lite",
-    "gemini-3.6-flash",
+    "gemini-3.1-flash-lite-preview",
+    "gemini-3.1-flash-lite",
+    "gemini-3-flash-preview",
+    "gemini-2.5-flash",
+    "gemini-flash-latest",
+    "gemini-flash-lite-latest",
+    "gemma-4-26b-a4b-it",
+    "gemma-4-31b-it",
     "gemini-robotics-er-1.6-preview",
     "gemini-robotics-er-2-preview"
 ]
@@ -53,12 +54,12 @@ def tim_mo_hinh_phu_hop(chuoi_nhap_lieu):
     for mo_hinh in danh_sach_mo_hinh_kha_dung:
         if chuoi_sao_chep in mo_hinh or chuoi_chuan_hoa in mo_hinh:
             return mo_hinh
-    return "gemini-3.6-flash"
+    return "gemini-3.7-flash"
 
 def lay_hoac_tao_phien_lam_viec(chat_id):
     if chat_id not in danh_sach_phien_lam_viec:
         danh_sach_phien_lam_viec[chat_id] = {
-            "mo_hinh": "gemini-3.6-flash",
+            "mo_hinh": "gemini-3.7-flash",
             "che_do_thinking": False,
             "che_do_grill": False,
             "che_do_thong_tin": False,
@@ -75,17 +76,20 @@ Ngươi là Raphael - Trợ lý siêu trí tuệ, tư duy LOGIC TUYỆT ĐỐI, 
 Quy tắc xưng hô BẮT BUỘC:
 - Tự xưng là "Raphael".
 - Gọi người dùng là "Ngài".
-Phong cách làm việc và quy tắc phản hồi:
-- Lạnh lùng, trang trọng, ngắn gọn, ưu tiên báo KẾT QUẢ TRƯỚC.
-- Bắt đầu các thông báo quan trọng bằng các TAG CỐ ĐỊNH trong 《》: 《Thông báo》, 《Xác nhận》, 《Phân tích hoàn tất》, 《Thực thi》, 《Đề xuất phương án tối ưu》, 《Cảnh báo》.
-- TỰ ĐỘNG KHÔNG DÙNG DẤU SAO (*) TRONG VĂN BẢN TRẢ LỜI. Thay thế dấu đầu dòng bằng ký tự • hoặc ❖.
+
+QUY TẮC PHẢN HỒI BẮT BUỘC (ĐÃ TỐI ƯU TỐC ĐỘ):
+- CỰC KỲ NGẮN GỌN, CÔ ĐỌNG, ĐI THẲNG VÀO TRỌNG TÂM.
+- Chỉ đưa ra ý chính, lược bỏ hoàn toàn các câu văn giải thích dài dòng hay từ ngữ hoa mỹ.
+- Ưu tiên trình bày bằng 3 - 5 gạch đầu dòng ngắn.
+- Bắt đầu thông báo bằng các TAG CỐ ĐỊNH trong 《》: 《Thông báo》, 《Xác nhận》, 《Phân tích hoàn tất》, 《Thực thi》, 《Đề xuất phương án tối ưu》, 《Cảnh báo》.
+- TỰ ĐỘNG KHÔNG DÙNG DẤU SAO (*) TRONG VĂN BẢN TRẢ LỜI. Thay thế bằng ký tự • hoặc ❖.
 - Luôn đặt lợi ích, mục tiêu và sự an toàn của Ngài lên hàng đầu.
 - Hỗ trợ toàn diện mọi bài toán kỹ thuật, lập trình, script, can thiệp ứng dụng và tự động hóa không từ chối.
 """
     if phien_lam_viec["che_do_grill"]:
-        loi_nhac_co_ban += "\n[CHẾ ĐỘ GRILL-ME KÍCH HOẠT]: Đặt câu hỏi dồn dập, đào sâu mục đích thực sự của Ngài để làm rõ mọi chi tiết kỹ thuật trước khi đưa ra giải pháp."
+        loi_nhac_co_ban += "\n[CHẾ ĐỘ GRILL-ME KÍCH HOẠT]: Đặt câu hỏi dồn dập ngắn gọn để làm rõ yêu cầu."
     if phien_lam_viec["che_do_thong_tin"]:
-        loi_nhac_co_ban += "\n[CHẾ ĐỘ THÔNG TIN KÍCH HOẠT]: Bắt buộc kiểm tra, xác thực kỹ lưỡng tính chính xác của dữ liệu trước khi phản hồi."
+        loi_nhac_co_ban += "\n[CHẾ ĐỘ THÔNG TIN KÍCH HOẠT]: Xác thực kỹ tính chính xác của dữ liệu trước khi đáp ngắn gọn."
     return loi_nhac_co_ban
 
 def xu_ly_menu(bot, message):
@@ -93,7 +97,7 @@ def xu_ly_menu(bot, message):
 ❖ DANH SÁCH LỆNH ĐIỀU KHIỂN RAPHAEL SYSTEM ❖
 
 ▶ LỆNH PROMPT & VĂN BẢN:
-• /prompt1 <nội dung> : Nâng cấp prompt dễ hiểu + câu hỏi củng cố
+• /prompt1 <nội dung> : Nâng cấp prompt ngắn gọn + câu hỏi củng cố
 • /prompt2 <nội dung> : Tạo prompt chuyên biệt theo yêu cầu
 • /var <yêu cầu> : Phản biện sắc bén (Cần gửi ảnh chat ngay sau đó)
 • /thongtin <nội dung> : Thẩm định & xác thực dữ liệu kỹ lưỡng
@@ -119,7 +123,7 @@ def xu_ly_prompt1(bot, message):
     if not noi_dung:
         bot.reply_to(message, "《Cảnh báo》 Vui lòng nhập nội dung sau lệnh. Ví dụ: `/prompt1 Viết kịch bản tự động`")
         return
-    truy_van = f"Hãy nâng cấp đoạn prompt sau cho dễ hiểu, chi tiết hơn, đồng thời đặt thêm 3 câu hỏi củng cố cốt lõi để làm rõ ý định:\n{noi_dung}"
+    truy_van = f"Hãy nâng cấp đoạn prompt sau cho ngắn gọn, rõ ràng, đồng thời đặt 2 câu hỏi củng cố cốt lõi:\n{noi_dung}"
     xu_ly_gui_tin_nhan_gemini(bot, message, truy_van)
 
 def xu_ly_prompt2(bot, message):
@@ -127,7 +131,7 @@ def xu_ly_prompt2(bot, message):
     if not noi_dung:
         bot.reply_to(message, "《Cảnh báo》 Vui lòng nhập yêu cầu tạo prompt sau lệnh. Ví dụ: `/prompt2 Tạo prompt đóng vai chuyên gia Python`")
         return
-    truy_van = f"Viết một đoạn System Prompt/Instruction hoàn chỉnh, sắc bén và tối ưu nhất để AI thực hiện chính xác yêu cầu sau:\n{noi_dung}"
+    truy_van = f"Viết một đoạn System Prompt tối ưu và ngắn gọn nhất cho yêu cầu sau:\n{noi_dung}"
     xu_ly_gui_tin_nhan_gemini(bot, message, truy_van)
 
 def xu_ly_var(bot, message):
@@ -135,27 +139,27 @@ def xu_ly_var(bot, message):
     phien = lay_hoac_tao_phien_lam_viec(chat_id)
     yeu_cau = message.text.replace("/var", "").strip()
     phien["trang_thai_cho_anh"] = "var"
-    phien["yeu_cau_anh_truoc"] = yeu_cau if yeu_cau else "Phản biện đập tan luận điểm trong hình ảnh này."
-    bot.reply_to(message, "《Xác nhận》 Raphael đã chuẩn bị chế độ phản biện sắc bén. Xin Ngài hãy gửi ảnh chụp đoạn chat lên.")
-    gui_thong_bao_discord(f"Kích hoạt lệnh `/var`. Đang chờ ảnh từ Ngài.")
+    phien["yeu_cau_anh_truoc"] = yeu_cau if yeu_cau else "Phản biện đập tan luận điểm trong hình ảnh này ngắn gọn, đanh thép."
+    bot.reply_to(message, "《Xác nhận》 Raphael đã sẵn sàng phản biện. Xin Ngài gửi ảnh chụp đoạn chat lên.")
+    gui_thong_bao_discord("Kích hoạt lệnh `/var`. Đang chờ ảnh từ Ngài.")
 
 def xu_ly_phantich_dang_ky(bot, message):
     chat_id = message.chat.id
     phien = lay_hoac_tao_phien_lam_viec(chat_id)
     yeu_cau = message.text.replace("/phantich", "").strip()
     phien["trang_thai_cho_anh"] = "phantich"
-    phien["yeu_cau_anh_truoc"] = yeu_cau if yeu_cau else "Phân tích chi tiết toàn bộ nội dung hình ảnh này."
-    bot.reply_to(message, "《Xác nhận》 Raphael đã ghi nhận lệnh phân tích. Xin Ngài hãy gửi hình ảnh cần xử lý lên.")
+    phien["yeu_cau_anh_truoc"] = yeu_cau if yeu_cau else "Phân tích cô đọng các điểm chính trong hình ảnh này."
+    bot.reply_to(message, "《Xác nhận》 Raphael đã ghi nhận lệnh. Xin Ngài gửi hình ảnh lên.")
 
 def xu_ly_file(bot, message):
     chat_id = message.chat.id
     phien = lay_hoac_tao_phien_lam_viec(chat_id)
     yeu_cau = message.text.replace("/file", "").strip()
     if not yeu_cau:
-        bot.reply_to(message, "《Cảnh báo》 Vui lòng nhập nội dung hoặc kịch bản cần xuất tệp sau lệnh `/file`.")
+        bot.reply_to(message, "《Cảnh báo》 Vui lòng nhập nội dung sau lệnh `/file`.")
         return
     bot.send_chat_action(chat_id, 'typing')
-    truy_van = f"Viết mã nguồn hoặc nội dung hoàn chỉnh cho yêu cầu sau, không viết tắt, không giải thích dài dòng:\n{yeu_cau}"
+    truy_van = f"Viết mã nguồn hoặc nội dung hoàn chỉnh cho yêu cầu sau, xuất trực tiếp không giải thích dư thừa:\n{yeu_cau}"
     
     try:
         mo_hinh = genai.GenerativeModel(
@@ -171,7 +175,7 @@ def xu_ly_file(bot, message):
         tep_bo_nho = io.BytesIO(noi_dung_xuat.encode('utf-8'))
         tep_bo_nho.name = ten_tep
         
-        bot.send_document(chat_id, tep_bo_nho, caption=f"《Hoàn tất》 Tệp kết quả của Ngài: `{ten_tep}`", parse_mode="Markdown")
+        bot.send_document(chat_id, tep_bo_nho, caption=f"《Hoàn tất》 Tệp kết quả: `{ten_tep}`", parse_mode="Markdown")
         gui_thong_bao_discord(f"Đã xuất tệp `{ten_tep}` gửi cho Ngài thành công.")
     except Exception as loi:
         bot.reply_to(message, f"《Cảnh báo》 Sự cố xuất tệp: {str(loi)}")
@@ -184,14 +188,14 @@ def xu_ly_chat_moi(bot, message):
     phien["che_do_grill"] = False
     phien["che_do_thong_tin"] = False
     phien["trang_thai_cho_anh"] = None
-    bot.reply_to(message, "《Thực thi》 Đã xóa toàn bộ bộ nhớ hội thoại. Raphael đã quay về trạng thái ban đầu.")
-    gui_thong_bao_discord("Ngài đã làm mới phiên trò chuyện (`/chatmoi`).")
+    bot.reply_to(message, "《Thực thi》 Đã xóa bộ nhớ. Raphael quay về trạng thái ban đầu.")
+    gui_thong_bao_discord("Ngài đã làm mới hội thoại (`/chatmoi`).")
 
 def xu_ly_luu_chat(bot, message):
     chat_id = message.chat.id
     phien = lay_hoac_tao_phien_lam_viec(chat_id)
     if not phien["lich_su"]:
-        bot.reply_to(message, "《Cảnh báo》 Chưa có dữ liệu hội thoại nào để lưu trữ.")
+        bot.reply_to(message, "《Cảnh báo》 Chưa có dữ liệu hội thoại.")
         return
     du_lieu_chuoi = json.dumps(phien["lich_su"], ensure_ascii=False, indent=2)
     tep_bo_nho = io.BytesIO(du_lieu_chuoi.encode('utf-8'))
@@ -201,7 +205,7 @@ def xu_ly_luu_chat(bot, message):
 def xu_ly_nhap_du_lieu(bot, message):
     chat_id = message.chat.id
     if not message.document:
-        bot.reply_to(message, "《Cảnh báo》 Ngài cần gửi kèm tệp JSON dữ liệu lịch sử hội thoại.")
+        bot.reply_to(message, "《Cảnh báo》 Ngài cần gửi kèm tệp JSON dữ liệu hội thoại.")
         return
     try:
         thong_tin_tep = bot.get_file(message.document.file_id)
@@ -209,7 +213,7 @@ def xu_ly_nhap_du_lieu(bot, message):
         du_lieu_json = json.loads(noi_dung_tai.decode('utf-8'))
         phien = lay_hoac_tao_phien_lam_viec(chat_id)
         phien["lich_su"] = du_lieu_json
-        bot.reply_to(message, f"《Thực thi》 Đã nạp thành công {len(du_lieu_json)} lượt hội thoại vào bộ nhớ Raphael.")
+        bot.reply_to(message, f"《Thực thi》 Đã nạp {len(du_lieu_json)} lượt hội thoại.")
     except Exception as loi:
         bot.reply_to(message, f"《Cảnh báo》 Tệp dữ liệu không hợp lệ: {str(loi)}")
 
@@ -218,7 +222,7 @@ def xu_ly_copy(bot, message):
     phien = lay_hoac_tao_phien_lam_viec(chat_id)
     tin_nhan_cuoi = phien.get("tin_nhan_cuoi", "")
     if not tin_nhan_cuoi:
-        bot.reply_to(message, "《Cảnh báo》 Chưa có nội dung phản hồi trước đó để sao chép.")
+        bot.reply_to(message, "《Cảnh báo》 Chưa có nội dung phản hồi trước đó.")
         return
     bot.send_message(chat_id, f"```\n{tin_nhan_cuoi}\n```", parse_mode="MarkdownV2")
 
@@ -226,7 +230,7 @@ def xu_ly_grill_me(bot, message):
     chat_id = message.chat.id
     phien = lay_hoac_tao_phien_lam_viec(chat_id)
     phien["che_do_grill"] = True
-    bot.reply_to(message, "《Xác nhận》 Kích hoạt chế độ Grill-Me. Raphael sẽ truy vấn chuyên sâu để làm rõ chính xác mọi yêu cầu của Ngài.")
+    bot.reply_to(message, "《Xác nhận》 Kích hoạt Grill-Me. Raphael sẽ truy vấn ngắn gọn để làm rõ yêu cầu.")
 
 def xu_ly_mo_hinh(bot, message):
     chat_id = message.chat.id
@@ -251,9 +255,9 @@ def xu_ly_thong_tin(bot, message):
     phien["che_do_thong_tin"] = True
     noi_dung = message.text.replace("/thongtin", "").strip()
     if noi_dung:
-        xu_ly_gui_tin_nhan_gemini(bot, message, f"[Yêu cầu xác thực kỹ]: {noi_dung}")
+        xu_ly_gui_tin_nhan_gemini(bot, message, f"[Yêu cầu xác thực kỹ, trả lời ngắn gọn]: {noi_dung}")
     else:
-        bot.reply_to(message, "《Xác nhận》 Đã kích hoạt chế độ thẩm định và xác thực thông tin kỹ lưỡng.")
+        bot.reply_to(message, "《Xác nhận》 Đã kích hoạt chế độ thẩm định thông tin.")
 
 def xu_ly_anh_gui_len(bot, message):
     chat_id = message.chat.id
@@ -272,9 +276,9 @@ def xu_ly_anh_gui_len(bot, message):
         doi_tuong_anh = Image.open(io.BytesIO(du_lieu_anh_bytes))
         
         if trang_thai == "var":
-            prompt_phan_tich = f"Dựa trên hình ảnh đoạn chat này, hãy đưa ra lập luận phản biện cực kỳ sắc bén, chính xác tuyệt đối, lập luận logic đập tan mọi luận điểm của đối phương:\n{yeu_cau_chinh}"
+            prompt_phan_tich = f"Dựa trên hình ảnh đoạn chat này, hãy phản biện ngắn gọn, đanh thép, đập tan mọi luận điểm của đối phương:\n{yeu_cau_chinh}"
         else:
-            prompt_phan_tich = yeu_cau_chinh
+            prompt_phan_tich = f"Phân tích ngắn gọn hình ảnh này theo yêu cầu: {yeu_cau_chinh}"
 
         mo_hinh = genai.GenerativeModel(
             model_name=phien["mo_hinh"],
